@@ -16,10 +16,10 @@ public class Main {
         System.out.println("Hello, I am a program from type " + type + " with identifier " + name);
 
         if (type.equals("producer")) {
-            Producer producer = new Producer(port, name);
+            Producer producer = new Producer(name);
             producer.run();
         } else if (type.equals("consumer")) {
-            Consumer consumer = new Consumer(port, name);
+            Consumer consumer = new Consumer(name);
             consumer.run();
         } else {
             System.out.println("Not valid type!");
