@@ -12,7 +12,7 @@ public class ServerSocketImpl implements Runnable {
     private String identifier;
 
     public ServerSocketImpl(Integer port, String identifier) throws IOException {
-        this.serverSocket = new java.net.ServerSocket(port);
+        this.serverSocket = new ServerSocket(port);
         this.identifier = identifier;
         System.out.println("Server started in port " + port + ". Waiting");
     }
@@ -27,7 +27,6 @@ public class ServerSocketImpl implements Runnable {
             }
         } catch (IOException exception) {
             exception.printStackTrace();
-
         }
     }
 }

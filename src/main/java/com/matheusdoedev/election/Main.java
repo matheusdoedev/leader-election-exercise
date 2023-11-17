@@ -12,14 +12,14 @@ public class Main {
 
         String type = args[0];
         String name = args[1];
-        String port = args[2];
+        Integer port = Integer.getInteger(args[2]);
         System.out.println("Hello, I am a program from type " + type + " with identifier " + name);
 
         if (type.equals("producer")) {
-            Producer producer = new Producer(name);
+            Producer producer = new Producer(name, port);
             producer.run();
         } else if (type.equals("consumer")) {
-            Consumer consumer = new Consumer(name);
+            Consumer consumer = new Consumer(name, port);
             consumer.run();
         } else {
             System.out.println("Not valid type!");

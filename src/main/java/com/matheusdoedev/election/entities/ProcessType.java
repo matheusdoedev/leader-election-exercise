@@ -3,17 +3,20 @@ package com.matheusdoedev.election.entities;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.matheusdoedev.election.Main;
 import com.matheusdoedev.election.sockets.ClientSocket;
 import com.matheusdoedev.election.sockets.ServerSocketImpl;
 
 public abstract class ProcessType {
+
+	protected static final int THREAD_SLEEP_TIME = 1000 * 60;
+
 	protected Integer port;
 	protected String name;
 	protected List<Process> processes;
@@ -43,10 +46,11 @@ public abstract class ProcessType {
 		for (int i = 1; i <= totalProcess; i++) {
 			String identifier = properties.getProperty("app.process.identifier" + i);
 			String host = properties.getProperty("app.process.host" + i);
-			Integer processPort = properties.getProperty("app.process.port" + i);
+			Integer processPort = Integer.getInteger(properties.getProperty("app.process.port" + i));
 			Process process = new Process(identifier, host, processPort);
 			processes.add(process);
 		}
+		this.initConnection();
 	}
 
 	protected void initConnection() {
@@ -59,25 +63,23 @@ public abstract class ProcessType {
 		}
 	}
 
-	public void run() {
-		while (true) {
-			try {
-				for (Process process : this.processes) {
-					try {
-						ClientSocket socket = new ClientSocket(process.getHost(), process.getPort());
-						socket.send("Hello, I am a consumer process " + this.name);
-						String response = socket.receive();
-						System.out.println("Response: " + response);
-					} catch (IOException exception) {
-						Logger.getLogger(Main.class.getName()).log(Level.SEVERE, "Error in connection with " + process.getIdentifier() + ": " + exception.getMessage();
-					}
-				}
-				System.out.println("I will sleep!");
-				Thread.sleep(1000*60);
-				System.out.println("Wake up!");
-			} catch (InterruptedException exception) {
-				Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, exception);
-			}
+	protected void createClientSocket(Process process, String processType) {
+		try {
+			ClientSocket socket = new ClientSocket(process.getHost(), process.getPort());
+			String socketSendMessage = String.format("Hello, I am a %s process %s", processType, this.name);
+
+			socket.send(socketSendMessage);
+
+			String response = socket.receive();
+
+			System.out.println("Response: " + response);
+		} catch (IOException exception) {
+			String logString = String.format("Error in connection with %s: %s", process.getIdentifier(),
+					exception.getMessage());
+
+			Logger.getLogger(Main.class.getName()).log(Level.SEVERE, logString);
 		}
 	}
+
+	public abstract void run();
 }

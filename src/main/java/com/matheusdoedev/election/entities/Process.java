@@ -3,9 +3,9 @@ package com.matheusdoedev.election.entities;
 public class Process {
     private String identifier;
     private String host;
-    private String port;
+    private Integer port;
 
-    public Process(String identifier, String host, String port) {
+    public Process(String identifier, String host, Integer port) {
         this.identifier = identifier;
         this.host = host;
         this.port = port;
@@ -27,11 +27,11 @@ public class Process {
         this.host = host;
     }
 
-    public String getPort() {
+    public Integer getPort() {
         return port;
     }
 
-    public void setPort(String port) {
+    public void setPort(Integer port) {
         this.port = port;
     }
 }
